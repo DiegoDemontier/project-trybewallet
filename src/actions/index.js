@@ -8,6 +8,15 @@ export const GET_CURRENCY_SUCCESS = 'GET_CURRENCY_SUCCESS';
 
 export const UPDATE_EXPENSES_SUCCESS = 'UPDATE_EXPENSES_SUCCESS';
 
+export const EDIT_EXPENSES = 'EDIT_EXPENSES';
+
+export const editExpenses = (payload) => (
+  {
+    type: EDIT_EXPENSES,
+    payload,
+  }
+);
+
 export const setUserValue = (payload) => (
   {
     type: SET_USERS,
@@ -41,7 +50,6 @@ export const getCurrencyThunk = (expense) => async (dispatch) => {
     totalExpenses = [...totalExpenses, currentExpenses];
     dispatch(setExchangeRatesSucces(totalExpenses));
   } else {
-    console.log(response);
     dispatch(getCurrencySuccess(response));
   }
 };

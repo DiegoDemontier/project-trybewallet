@@ -7,14 +7,8 @@ class ExpenseForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: 0,
-      value: 0,
-      description: '',
-      currency: 'USD',
-      method: 'Dinheiro',
-      tag: 'Alimentação',
+      ...props.editExpenses,
     };
-
     this.renderValue = this.renderValue.bind(this);
     this.renderDescription = this.renderDescription.bind(this);
     this.renderPayment = this.renderPayment.bind(this);
@@ -31,7 +25,7 @@ class ExpenseForm extends Component {
   }
 
   // PREENCHE OS "VALUES" DO STATE DE ACORDO COM CADA "NAME" DENTRO DOS INPUTS
-  handleChange({ target: { name, value } }) {
+  handleChange(name, value) {
     this.setState({ [name]: value });
   }
 
@@ -50,15 +44,17 @@ class ExpenseForm extends Component {
 
   // RENDERIZA O INPUT DO "valor"
   renderValue() {
+    const { value } = this.state;
     return (
       <label htmlFor="value">
         Valor
         <input
           required
           id="value"
+          value={ value || '' }
           type="number"
-          name="value"
-          onChange={ this.handleChange }
+          /* name="value" */
+          onChange={ ({ target }) => this.handleChange('value', target.value) }
         />
       </label>
     );
@@ -72,8 +68,10 @@ class ExpenseForm extends Component {
         <input
           id="description"
           type="text"
-          name="description"
-          onChange={ this.handleChange }
+          /* name="description"
+          onChange={ this.handleChange } */
+          onChange={ ({ target }) => this.handleChange('description', target.value) }
+
         />
       </label>
     );
@@ -82,6 +80,7 @@ class ExpenseForm extends Component {
   // RENDERIZA O SELECT QUE CONTÉM AS OPÇÃO DAS "Moeda"
   renderCurrency() {
     const { currencies } = this.props;
+    const { currency } = this.state;
 
     if (Object.keys(currencies).length !== 0) {
       const arrayCurrency = Object.keys(currencies);
@@ -92,8 +91,10 @@ class ExpenseForm extends Component {
           Moeda
           <select
             id="currency"
-            name="currency"
-            onChange={ this.handleChange }
+            valor={ currency || '' }
+            /* name="currency"
+            onChange={ this.handleChange } */
+            onChange={ ({ target }) => this.handleChange('currency', target.value) }
           >
             {arrayCurrency.map((element, index) => (
               <option key={ index } value={ element }>{ element }</option>
@@ -111,8 +112,9 @@ class ExpenseForm extends Component {
         Método de pagamento
         <select
           id="method"
-          name="method"
-          onChange={ this.handleChange }
+          /* name="method"
+          onChange={ this.handleChange } */
+          onChange={ ({ target }) => this.handleChange('method', target.value) }
         >
           <option value="Dinheiro">Dinheiro</option>
           <option value="Cartão de crédito">Cartão de crédito</option>
@@ -129,8 +131,9 @@ class ExpenseForm extends Component {
         Tag
         <select
           id="tag"
-          name="tag"
-          onChange={ this.handleChange }
+          /* name="tag"
+          onChange={ this.handleChange } */
+          onChange={ ({ target }) => this.handleChange('tag', target.value) }
         >
           <option value="Alimentação">Alimentação</option>
           <option value="Lazer">Lazer</option>
@@ -172,6 +175,7 @@ const mapStateToProps = (state) => ({
   expenses: state.wallet.expenses,
   currencies: state.wallet.currencies,
   loading: state.wallet.loading,
+  editExpenses: state.wallet.editExpenses.edit,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpenseForm);

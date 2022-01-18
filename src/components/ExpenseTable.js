@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateExpensesSuccess } from '../actions/index';
+import { updateExpensesSuccess, editExpenses } from '../actions/index';
 
 class ExpenseTable extends Component {
   renderDescription(description) {
@@ -68,8 +68,28 @@ class ExpenseTable extends Component {
     );
   }
 
+  renderr(index1) {
+    const { expenses, dispatchSetEditExpenses } = this.props;
+    return (
+      <th>
+        <button
+          type="button"
+          data-testid="delete-btn"
+          onClick={ () => {
+            let newExpenses = expenses.filter((__, index2) => index2 === index1);
+            newExpenses = { edit: newExpenses[0], index: index1, status: true };
+            dispatchSetEditExpenses(newExpenses);
+          } }
+        >
+          editar
+        </button>
+      </th>
+    );
+  }
+
   render() {
     const { expenses } = this.props;
+    console.log(expenses);
     return (
       <table>
         <thead>
@@ -87,7 +107,6 @@ class ExpenseTable extends Component {
         </thead>
         <thead>
           {expenses.map(({
-            id,
             description,
             tag,
             method,
@@ -95,7 +114,7 @@ class ExpenseTable extends Component {
             currency,
             exchangeRates,
           }, index) => (
-            <tr key={ id }>
+            <tr key={ index }>
               {this.renderDescription(description)}
               {this.renderTag(tag)}
               {this.renderMethod(method)}
@@ -105,6 +124,7 @@ class ExpenseTable extends Component {
               {this.renderConvertedValue(exchangeRates, currency, value)}
               {this.renderConversionCurrency(expenses)}
               {this.renderButton(index)}
+              {this.renderr(index)}
             </tr>
           ))}
         </thead>
@@ -124,6 +144,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSetExpenses: (value) => dispatch(updateExpensesSuccess(value)),
+  dispatchSetEditExpenses: (value) => dispatch(editExpenses(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpenseTable);
